@@ -1,0 +1,240 @@
+/**
+ * 尝试对常见 ESLint 提示进行模式化翻译
+ * @param {string} ruleId 规则 ID
+ * @param {string} message ESLint 原始英文消息
+ * @param {{zh?: string}} [ruleEntry] 规则字典项（若有）
+ */
+function translateHeuristic(ruleId, message, ruleEntry) {
+  if (!message || typeof message !== 'string') return ruleEntry?.zh
+
+  // 2) 针对常见插件的典型提示进行特化翻译（优先执行）
+  // react-hooks/exhaustive-deps: 更精确的依赖相关翻译
+  let m
+
+  // 缺少依赖的情况
+  m = message.match(/^React Hook (\w+) has a missing dependency: '(.+?)'\.(.*)/)
+  if (m) {
+    const hook = m[1]
+    const dep = m[2]
+    const rest = m[3].trim()
+    let restZh = rest
+    if (rest.includes('Either include it or remove the dependency array')) {
+      restZh = '。 请将其加入依赖数组，或移除依赖数组'
+    }
+    // 处理外部作用域值的附加说明
+    if (
+      rest.includes('Outer scope values like') &&
+      rest.includes("aren't valid dependencies")
+    ) {
+      const outerScopeMatch = rest.match(
+        /Outer scope values like '(.+?)' aren't valid dependencies because mutating them doesn't re-render the component\.?/
+      )
+      if (outerScopeMatch) {
+        const outerValue = outerScopeMatch[1]
+        restZh = `。 请将其加入依赖数组，或移除依赖数组。外部作用域的值如 ${renderCodeBlockVariable(
+          outerValue
+        )} 不是有效的依赖，因为改变它们不会重新渲染组件`
+      }
+    }
+    return `React Hook ${renderCodeBlockFunction(
+      hook
+    )} 缺少依赖：${renderCodeBlockVariable(dep)}${restZh}`
+  }
+
+  // 缺少多个依赖的情况
+  m = message.match(/^React Hook (\w+) has missing dependencies: (.+?)\.(.*)/)
+  if (m) {
+    const hook = m[1]
+    const deps = m[2]
+    const rest = m[3].trim()
+    let restZh = rest
+    if (rest.includes('Either include them or remove the dependency array')) {
+      restZh = '。 请将它们加入依赖数组，或移除依赖数组'
+    }
+    return `React Hook ${renderCodeBlockFunction(
+      hook
+    )} 缺少依赖：${renderCodeBlockVariable(deps)}${restZh}`
+  }
+
+  // 不必要的依赖
+  m = message.match(
+    /^React Hook (\w+) has an unnecessary dependency: '(.+?)'\.(.*)/
+  )
+  if (m) {
+    const hook = m[1]
+    const dep = m[2]
+    const rest = m[3].trim()
+    let restZh = rest
+    if (rest.includes('You can safely remove it')) {
+      restZh = '。可以安全移除'
+    }
+    return `React Hook ${renderCodeBlockFunction(
+      hook
+    )} 有不必要的依赖：${renderCodeBlockVariable(dep)}${restZh}`
+  }
+
+  // 字面量依赖（null、数字、字符串等）
+  m = message.match(
+    /^The (.+?) literal is not a valid dependency because it never changes\.?/
+  )
+  if (m) {
+    const literal = m[1]
+    return `${renderCodeBlockVariable(
+      literal
+    )} 字面量不是有效的依赖，因为它永远不会变化。可以安全移除`
+  }
+
+  // 外部作用域值依赖（如 undefined 等）
+  m = message.match(
+    /^Outer scope values like '(.+?)' aren't valid dependencies because mutating them doesn't re-render the component\.?/
+  )
+  if (m) {
+    const value = m[1]
+    return `外部作用域的值如 ${renderCodeBlockVariable(
+      value
+    )} 不是有效的依赖，因为改变它们不会重新渲染组件。可以安全移除`
+  }
+
+  // Hook 调用位置错误
+  if (/React Hook [\w$]+ is called in function/.test(message)) {
+    return 'React Hook 的调用位置不合法：Hook 只能在 React 函数组件或自定义 Hook 的顶层调用'
+  }
+
+  // 通用的 exhaustive-deps 规则描述
+  if (ruleId === 'react-hooks/exhaustive-deps' && !message) {
+    return '校验 useEffect、useCallback、useMemo 等 Hook 的依赖数组是否完备'
+  }
+
+  // prefer-const 规则特化翻译
+  if (ruleId === 'prefer-const') {
+    // 处理 "变量名 is never reassigned. Use 'const' instead." 格式
+    m = message.match(/^'(.+?)' is never reassigned\. Use 'const' instead\.?/)
+    if (m) {
+      const varName = m[1]
+      return `${renderCodeBlockVariable(
+        varName
+      )} 从未被重新赋值，应使用 ${renderCodeBlockKeyword('const')} 声明`
+    }
+  }
+
+  // TypeScript ESLint 规则特化翻译
+  // @typescript-eslint/no-unused-vars: 未使用变量
+  if (
+    ruleId === '@typescript-eslint/no-unused-vars' ||
+    ruleId === 'no-unused-vars'
+  ) {
+    // 变量被赋值但从未使用
+    m = message.match(/^'(.+?)' is assigned a value but never used\.?/)
+    if (m) {
+      const varName = m[1]
+      return `${renderCodeBlockVariable(varName)} 被赋值但从未使用`
+    }
+
+    // 变量已定义但从未使用
+    m = message.match(/^'(.+?)' is defined but never used\.?/)
+    if (m) {
+      const varName = m[1]
+      return `${renderCodeBlockVariable(varName)} 已定义但从未使用`
+    }
+
+    // 变量未定义
+    m = message.match(/^'(.+?)' is not defined\.?/)
+    if (m) {
+      const varName = m[1]
+      return `${renderCodeBlockVariable(varName)} 未定义`
+    }
+  }
+
+  // @typescript-eslint 其他常见规则
+  if (ruleId.startsWith('@typescript-eslint/')) {
+    // 类型相关错误的通用模式
+    m = message.match(/^Type '(.+?)' is not assignable to type '(.+?)'\.?/)
+    if (m) {
+      const fromType = m[1]
+      const toType = m[2]
+      return `类型 '${fromType}' 不能赋值给类型 '${toType}'`
+    }
+
+    // 参数相关错误
+    m = message.match(/^Parameter '(.+?)' (.+)\.?/)
+    if (m) {
+      const paramName = m[1]
+      const description = m[2]
+      let descZh = description
+      if (description.includes('implicitly has an')) {
+        descZh = "隐式具有 'any' 类型"
+      }
+      return `参数 '${paramName}' ${descZh}`
+    }
+  }
+
+  // 3) 一些通用短语替换，提升可读性（尽量不改变变量名等细节）
+  // 注意：这里的替换在特化翻译之后进行，作为兜底处理
+  let zh = message
+  /** @type {{from: RegExp, to: string}[]} */
+  const replacements = [
+    { from: /Unexpected/gi, to: '意外的' },
+    { from: /Missing/gi, to: '缺少' },
+    { from: /\bmissing dependency\b/gi, to: '缺少依赖' },
+    { from: /\bmissing dependencies\b/gi, to: '缺少依赖' },
+    { from: /\bunnecessary dependency\b/gi, to: '不必要的依赖' },
+    { from: /\bunnecessary dependencies\b/gi, to: '不必要的依赖' },
+    { from: /\bdependency\b/gi, to: '依赖' },
+    { from: /\bdependencies\b/gi, to: '依赖' },
+    // TypeScript 类型关键字高亮
+    { from: /\bany\b/g, to: renderCodeBlockKeyword('any') },
+    { from: /\bconst\b/g, to: renderCodeBlockKeyword('const') },
+    // 注意：下面这些规则已经在特化处理中处理过了，这里作为兜底
+    { from: /\b(\w+) is not defined/gi, to: '$1 未定义' },
+    {
+      from: /\b(\w+) is defined but never used/gi,
+      to: '$1 已定义但从未使用'
+    },
+    {
+      from: /\b(\w+) is assigned a value but never used/gi,
+      to: '$1 被赋值但从未使用'
+    },
+    { from: /not allowed/gi, to: '不允许' },
+    { from: /should not/gi, to: '不应' },
+    { from: /\bmust\b/gi, to: '必须' },
+    { from: /require(s)?/gi, to: '要求' },
+    // 针对 no-explicit-any 等规则的常见消息模式
+    { from: /Specify a different type\.?/gi, to: '请指定其他的类型' },
+    {
+      from: /Either include it or remove the dependency array\.?/gi,
+      to: '请将其加入依赖数组，或移除依赖数组'
+    },
+    {
+      from: /Either include them or remove the dependency array\.?/gi,
+      to: '请将它们加入依赖数组，或移除依赖数组'
+    },
+    { from: /You can safely remove it\.?/gi, to: '可以安全移除' },
+    { from: /because it never changes/gi, to: '因为它永远不会变化' }
+  ]
+  for (const { from, to } of replacements) {
+    zh = zh.replace(from, to)
+  }
+
+  // 最后兜底：如果以上翻译都没有明显改善，且规则字典中有中文描述，则使用规则字典
+  if (zh === message && ruleEntry && ruleEntry.zh) {
+    return ruleEntry.zh
+  }
+
+  return zh
+}
+
+function renderCodeBlockVariable(content) {
+  return `<span alt="eslint-rules-translate-chinese-code-variable">${content}</span>`
+}
+
+function renderCodeBlockFunction(content) {
+  return `<span alt="eslint-rules-translate-chinese-code-function">${content}</span>`
+}
+
+function renderCodeBlockKeyword(content) {
+  return `<span alt="eslint-rules-translate-chinese-code-keyword">${content}</span>`
+}
+
+module.exports = {
+  translateHeuristic
+}

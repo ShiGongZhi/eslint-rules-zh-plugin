@@ -1,6 +1,7 @@
 const vscode = require('vscode')
 const eslintRules = require('../rules')
 const RULE_URL = require('./const/rule-urls')
+const { translateHeuristic } = require('./utils')
 
 const reactHooksUrlMapping = {
   'react-hooks/exhaustive-deps': '14920',
@@ -64,12 +65,22 @@ function provideHover(document, position) {
             ruleId = `eslint(${ruleId})`
           }
 
-          // 若规则词条不存在，仍然展示原始 ruleId 和可用链接
-          const zh = rule && rule.zh ? rule.zh : '查看规则文档'
-          const md = url
-            ? `$(lightbulb) [${ruleId}：${zh}](${url})`
-            : `$(lightbulb) ${ruleId}：${zh}`
-          return new vscode.MarkdownString(md, true)
+          // 使用翻译器翻译错误消息
+          const originalMessage = diagnostic.message
+          const translatedMessage = translateHeuristic(
+            String(codeValue),
+            originalMessage,
+            rule
+          )
+
+          // 若规则词条不存在，使用翻译后的消息或原始消息
+          const zh = translatedMessage || (rule && rule.zh) || '查看规则文档'
+          // const md = `$(lightbulb) [${ruleId}：${zh}](${url})`
+          const md = `<span alt="eslint-rules-translate-chinese-markdown">${zh}。 [${ruleId}](${url})</span>`
+          const markdownString = new vscode.MarkdownString(md, true)
+          markdownString.isTrusted = true
+          markdownString.supportHtml = true
+          return markdownString
         } else {
           return null
         }
