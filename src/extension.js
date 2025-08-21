@@ -54,6 +54,9 @@ function provideHover(document, position) {
           } else if (/react-hooks/.test(ruleId)) {
             // eslint-plugin-react-hooks 规则
             url = RULE_URL.REACT_HOOKS + reactHooksUrlMapping[ruleId]
+          } else if (/react-refresh/.test(ruleId)) {
+            // eslint-plugin-react-refresh 规则
+            url = RULE_URL.REACT_REFRESH
           } else if (/react/.test(ruleId)) {
             // eslint-plugin-react 规则
             url = RULE_URL.REACT + ruleId.replace('react/', '') + '.md'
