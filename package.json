@@ -1,12 +1,9 @@
 {
-  "name": "eslint-rules-zh-plugin",
-  "displayName": "ESLint Chinese Rules",
-  "description": "eslint中文规则提示插件",
-  "version": "0.2.2",
-  "publisher": "maggie",
-  "author": {
-    "name": "maggie"
-  },
+  "name": "eslint-rules-zh-with-pretty",
+  "displayName": "ESLint Rules Chinese with Pretty",
+  "description": "中文展示eslint规则提示，且美化展示效果",
+  "version": "0.0.1",
+  "publisher": "SoulFriends",
   "keywords": [
     "eslint",
     "rules",
@@ -15,13 +12,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/maggie-chen/eslint-rules-zh-plugin.git"
+    "url": "https://github.com/ShiGongZhi/eslint-rules-zh-plugin"
   },
-  "bugs": {
-    "url": "https://github.com/maggie-chen/eslint-rules-zh-plugin/issues",
-    "email": "maggie_jsj@163.com"
-  },
-  "homepage": "https://github.com/maggie-chen/eslint-rules-zh-plugin/blob/master/README.md",
   "license": "MIT",
   "icon": "assets/icon.png",
   "engines": {
