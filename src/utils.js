@@ -224,15 +224,15 @@ function translateHeuristic(ruleId, message, ruleEntry) {
 }
 
 function renderCodeBlockVariable(content) {
-  return `<span alt="eslint-rules-translate-chinese-code-variable">${content}</span>`
+  return `<code alt="eslint-rules-translate-chinese-code-variable">${content}</code>`
 }
 
 function renderCodeBlockFunction(content) {
-  return `<span alt="eslint-rules-translate-chinese-code-function">${content}</span>`
+  return `<code alt="eslint-rules-translate-chinese-code-function">${content}</code>`
 }
 
 function renderCodeBlockKeyword(content) {
-  return `<span alt="eslint-rules-translate-chinese-code-keyword">${content}</span>`
+  return `<code alt="eslint-rules-translate-chinese-code-keyword">${content}</code>`
 }
 
 module.exports = {

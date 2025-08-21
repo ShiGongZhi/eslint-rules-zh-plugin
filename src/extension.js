@@ -63,6 +63,9 @@ function provideHover(document, position) {
           } else if (/vue/.test(ruleId)) {
             // eslint-plugin-vue 规则
             url = RULE_URL.VUE + ruleId.replace('vue/', '')
+          } else if (/prettier/.test(ruleId)) {
+            // eslint-plugin-prettier 规则
+            url = RULE_URL.PRETTIER
           } else {
             // eslint 规则
             ruleId = `eslint(${ruleId})`
