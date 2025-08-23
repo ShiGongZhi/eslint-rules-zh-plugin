@@ -96,6 +96,21 @@ function provideHover(document, position) {
 
     if (contents.length === 0) return null
 
+    // 如果有多个错误，在每个错误之间添加分隔线
+    if (contents.length > 1) {
+      const separatedContents = []
+      for (let i = 0; i < contents.length; i++) {
+        separatedContents.push(contents[i])
+        // 在非最后一个错误后添加分隔线
+        if (i < contents.length - 1) {
+          const separator = new vscode.MarkdownString('---')
+          separator.isTrusted = true
+          separatedContents.push(separator)
+        }
+      }
+      return { contents: separatedContents }
+    }
+
     // 直接返回所有匹配的错误，因为初始过滤已确保鼠标在错误范围内
     return { contents }
   }
