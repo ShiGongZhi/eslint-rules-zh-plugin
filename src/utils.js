@@ -236,8 +236,17 @@ function translateHeuristic(ruleId, message, ruleEntry) {
     { from: /\bdependency\b/gi, to: '依赖' },
     { from: /\bdependencies\b/gi, to: '依赖' },
     // TypeScript 类型关键字高亮
-    { from: /\bany\b/g, to: renderCodeBlockKeyword('any') },
-    { from: /\bconst\b/g, to: renderCodeBlockKeyword('const') },
+    {
+      from: /\bany\b/g,
+      to: ruleId === 'prettier/prettier' ? 'any' : renderCodeBlockKeyword('any')
+    },
+    {
+      from: /\bconst\b/g,
+      to:
+        ruleId === 'prettier/prettier'
+          ? 'const'
+          : renderCodeBlockKeyword('const')
+    },
     // 注意：下面这些规则已经在特化处理中处理过了，这里作为兜底
     { from: /\b(\w+) is not defined/gi, to: '$1 未定义' },
     {
