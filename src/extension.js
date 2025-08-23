@@ -16,22 +16,23 @@ function provideHover(document, position) {
       if (diagnostic.source !== 'eslint') {
         return false
       }
-      if (
-        position.line === diagnostic.range.start.line &&
-        position.line === diagnostic.range.end.line &&
-        position.character >= diagnostic.range.start.character &&
-        position.character <= diagnostic.range.end.character
-      ) {
-        // 单行
-        return true
-      } else if (
-        position.line >= diagnostic.range.start.line &&
-        position.line <= diagnostic.range.end.line
-      ) {
-        // 多行
-        return true
+
+      const range = diagnostic.range
+
+      // 检查鼠标是否在错误的精确范围内
+      if (range.start.line === range.end.line) {
+        // 单行错误：鼠标必须在字符范围内
+        return (
+          position.line === range.start.line &&
+          position.character >= range.start.character &&
+          position.character <= range.end.character
+        )
+      } else {
+        // 多行错误：鼠标必须在行范围内
+        return (
+          position.line >= range.start.line && position.line <= range.end.line
+        )
       }
-      return false
     })
   if (diagnostics && diagnostics.length > 0) {
     const contents = diagnostics
@@ -92,11 +93,11 @@ function provideHover(document, position) {
         }
       })
       .filter((diagnostic) => !!diagnostic)
-    return contents.length
-      ? {
-          contents
-        }
-      : null
+
+    if (contents.length === 0) return null
+
+    // 直接返回所有匹配的错误，因为初始过滤已确保鼠标在错误范围内
+    return { contents }
   }
   return
 }
