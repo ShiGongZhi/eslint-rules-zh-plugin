@@ -117,6 +117,60 @@ function translateHeuristic(ruleId, message, ruleEntry) {
     }
   }
 
+  // react-refresh/only-export-components 规则特化翻译
+  if (ruleId === 'react-refresh/only-export-components') {
+    // 场景1: 文件导出了组件和其他内容（常量、函数等）
+    if (
+      message.includes(
+        'Fast refresh only works when a file only exports components'
+      )
+    ) {
+      // namedExport
+      if (
+        message.includes(
+          'Use a new file to share constants or functions between components'
+        )
+      ) {
+        return 'Fast Refresh 仅在文件仅导出组件时有效。使用新文件在组件之间共享常量或函数'
+      }
+      // localComponents
+      if (message.includes('Move your component(s) to a separate file')) {
+        return 'Fast Refresh 仅在文件仅导出组件时有效。请将您的组件移动到单独的文件中'
+      }
+      // reactContext
+      if (message.includes('Move your React context(s) to a separate file')) {
+        return 'Fast Refresh 仅在文件仅导出组件时有效。请将您的 React context(s) 移动到单独的文件中'
+      }
+    }
+
+    // 场景2: noExport
+    if (
+      message.includes(
+        'Fast refresh only works when a file has exports. Move your component(s) to a separate file'
+      )
+    ) {
+      return 'Fast Refresh 仅在文件有导出时有效。请将您的组件移动到单独的文件中'
+    }
+
+    // 场景3: anonymousExport
+    if (
+      message.includes(
+        "Fast refresh can't handle anonymous components. Add a name to your export"
+      )
+    ) {
+      return 'Fast Refresh 无法处理匿名组件。请为导出添加名称'
+    }
+
+    // 场景4: exportAll
+    if (
+      message.includes(
+        "This rule can't verify that `export *` only exports components"
+      )
+    ) {
+      return "This rule can't verify that `export *` only exports components"
+    }
+  }
+
   // TypeScript ESLint 规则特化翻译
   // @typescript-eslint/no-unused-vars: 未使用变量
   if (

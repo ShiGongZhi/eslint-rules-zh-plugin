@@ -1,6 +1,7 @@
 # ESLint Chinese Rules
 
 ESLint 规则中文提示插件，且美化展示效果。
+隐藏原始 eslint 报错功能已实现，待补充到文档中。
 
 ![alt text](image.png)
 ![alt text](image-1.png)
