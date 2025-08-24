@@ -456,8 +456,8 @@ module.exports = {
     zh: '不允许将字词作为异常抛出'
   },
   '@typescript-eslint/no-unused-expressions': {
-    en: 'Disallow unused expressions',
-    zh: '不允许未使用的表达式'
+    en: 'Expected an assignment or function call and instead saw an expression',
+    zh: '期望赋值或函数调用，而不是表达式'
   },
   '@typescript-eslint/no-unused-vars': {
     en: 'Disallow unused variables',

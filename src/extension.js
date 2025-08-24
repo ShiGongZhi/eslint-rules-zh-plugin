@@ -19,20 +19,25 @@ function provideHover(document, position) {
 
       const range = diagnostic.range
 
-      // 检查鼠标是否在错误的精确范围内
-      if (range.start.line === range.end.line) {
-        // 单行错误：鼠标必须在字符范围内
-        return (
-          position.line === range.start.line &&
-          position.character >= range.start.character &&
-          position.character <= range.end.character
+      // 使用更简洁和可靠的范围检查方法
+      // 扩展原始范围以提供更好的用户体验
+      const leftTolerance = 2
+      const rightTolerance = 1
+
+      // 创建扩展后的范围
+      const extendedRange = new vscode.Range(
+        new vscode.Position(
+          range.start.line,
+          Math.max(range.start.character - leftTolerance, 0)
+        ),
+        new vscode.Position(
+          range.end.line,
+          range.end.character + rightTolerance
         )
-      } else {
-        // 多行错误：鼠标必须在行范围内
-        return (
-          position.line >= range.start.line && position.line <= range.end.line
-        )
-      }
+      )
+
+      // 使用 VS Code 内置的 contains 方法进行范围检查
+      return extendedRange.contains(position)
     })
   if (diagnostics && diagnostics.length > 0) {
     const contents = diagnostics
