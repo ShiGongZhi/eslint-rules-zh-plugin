@@ -51,9 +51,32 @@ function translateHeuristic(ruleId, message, ruleEntry) {
     if (rest.includes('Either include them or remove the dependency array')) {
       restZh = '。 请将它们加入依赖数组，或移除依赖数组'
     }
+
+    // 处理多个依赖的高亮，分别对每个变量名进行高亮
+    let depsZh = deps
+    // 匹配形如 "'var1' and 'var2'" 或 "'var1', 'var2', and 'var3'" 的模式
+    const singleQuoteVars = deps.match(/'([^']+)'/g)
+    if (singleQuoteVars) {
+      singleQuoteVars.forEach((quotedVar) => {
+        const varName = quotedVar.slice(1, -1) // 去掉引号
+        depsZh = depsZh.replace(quotedVar, renderCodeBlockVariable(varName))
+      })
+
+      // 将 "and" 翻译为 "和"，并删除 "和" 前面多余的逗号
+      depsZh = depsZh
+        .replace(/,\s+and\s+/g, ' 和 ')
+        .replace(/\s+and\s+/g, ' 和 ')
+
+      // 统计依赖数量
+      const depCount = singleQuoteVars.length
+      return `React Hook ${renderCodeBlockFunction(
+        hook
+      )} 缺少${renderCodeBlockNumber(depCount)}个依赖：${depsZh}${restZh}`
+    }
+
     return `React Hook ${renderCodeBlockFunction(
       hook
-    )} 缺少依赖：${renderCodeBlockVariable(deps)}${restZh}`
+    )} 缺少依赖：${depsZh}${restZh}`
   }
 
   // 不必要的依赖
@@ -296,6 +319,10 @@ function renderCodeBlockFunction(content) {
 
 function renderCodeBlockKeyword(content) {
   return `<code alt="eslint-rules-translate-chinese-code-keyword">${content}</code>`
+}
+
+function renderCodeBlockNumber(content) {
+  return `<code alt="eslint-rules-translate-chinese-code-number">${content}</code>`
 }
 
 module.exports = {
