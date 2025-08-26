@@ -261,7 +261,11 @@ function translateHeuristic(ruleId, message, ruleEntry) {
     // TypeScript 类型关键字高亮
     {
       from: /\bany\b/g,
-      to: ruleId === 'prettier/prettier' ? 'any' : renderCodeBlockKeyword('any')
+      // to: ruleId === 'prettier/prettier' ? 'any' : renderCodeBlockKeyword('any')
+      to:
+        ruleId === '@typescript-eslint/no-explicit-any'
+          ? renderCodeBlockKeyword('any')
+          : 'any'
     },
     {
       from: /\bconst\b/g,
