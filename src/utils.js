@@ -200,6 +200,13 @@ function translateHeuristic(ruleId, message, ruleEntry) {
     ruleId === '@typescript-eslint/no-unused-vars' ||
     ruleId === 'no-unused-vars'
   ) {
+    // 变量被赋值但仅用作类型
+    m = message.match(/^'(.+?)' is assigned a value but only used as a type\.?/)
+    if (m) {
+      const varName = m[1]
+      return `${renderCodeBlockVariable(varName)} 被赋值但仅用作类型`
+    }
+
     // 变量被赋值但从未使用
     m = message.match(/^'(.+?)' is assigned a value but never used\.?/)
     if (m) {
@@ -212,6 +219,13 @@ function translateHeuristic(ruleId, message, ruleEntry) {
     if (m) {
       const varName = m[1]
       return `${renderCodeBlockVariable(varName)} 已定义但从未使用`
+    }
+
+    // 变量仅用作类型
+    m = message.match(/^'(.+?)' is only used as a type\.?/)
+    if (m) {
+      const varName = m[1]
+      return `${renderCodeBlockVariable(varName)} 仅用作类型`
     }
 
     // 变量未定义
