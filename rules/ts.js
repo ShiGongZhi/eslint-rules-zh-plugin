@@ -156,8 +156,8 @@ module.exports = {
     zh: '不允许在空值凝聚运算符的左操作数中出现非空值断言'
   },
   '@typescript-eslint/no-non-null-asserted-optional-chain': {
-    en: 'Disallow non-null assertions after an optional chain expression',
-    zh: '不允许在一个可选的链式表达后出现非空的断言'
+    en: 'Optional chain expressions can return undefined by design - using a non-null assertion is unsafe and wrong.',
+    zh: '可选链表达式可以通过设计返回undefined - 使用non-null断言是不安全和错误的'
   },
   '@typescript-eslint/no-non-null-assertion': {
     en: 'Disallow non-null assertions using the ! postfix operator',
