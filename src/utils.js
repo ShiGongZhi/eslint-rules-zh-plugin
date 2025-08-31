@@ -300,7 +300,7 @@ function translateHeuristic(ruleId, message, ruleEntry) {
     },
     { from: /not allowed/gi, to: '不允许' },
     { from: /should not/gi, to: '不应' },
-    { from: /\bmust\b/gi, to: '必须' },
+    // { from: /\bmust\b/gi, to: '必须' },
     { from: /require(s)?/gi, to: '要求' },
     // 针对 no-explicit-any 等规则的常见消息模式
     { from: /Specify a different type\.?/gi, to: '请指定其他的类型' },

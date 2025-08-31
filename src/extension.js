@@ -88,7 +88,7 @@ function provideHover(document, position) {
           // 若规则词条不存在，使用翻译后的消息或原始消息
           const zh = translatedMessage || (rule && rule.zh) || '查看规则文档'
           // const md = `$(lightbulb) [${ruleId}：${zh}](${url})`
-          const md = `<span alt="eslint-rules-translate-chinese-markdown">${zh}。 [${ruleId}](${url})</span>`
+          const md = `<span alt="eslint-rules-translate-chinese-markdown">${zh} [${ruleId}](${url})</span>`
           const markdownString = new vscode.MarkdownString(md, true)
           markdownString.isTrusted = true
           markdownString.supportHtml = true

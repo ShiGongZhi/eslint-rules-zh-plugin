@@ -11,10 +11,10 @@ module.exports = {
     en: 'Disallow awaiting a value that is not a Thenable',
     zh: '不允许等待一个不是Thenable的值'
   },
-  '@typescript-eslint/ban-ts-comment': {
-    en: 'Disallow @ts-<directive> comments or require descriptions after directive',
-    zh: '不允许@ts-<指令>评论或要求指令后的描述'
-  },
+  // '@typescript-eslint/ban-ts-comment': {
+  //   en: 'Disallow @ts-<directive> comments or require descriptions after directive',
+  //   zh: '不允许@ts-<指令>评论或要求指令后的描述'
+  // },
   '@typescript-eslint/ban-tslint-comment': {
     en: 'Disallow // tslint:<rule-flag> comments',
     zh: '不允许//tslint:<规则-标志>评论'
