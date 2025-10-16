@@ -1,0 +1,67 @@
+/* 清除原生eslint报错 */
+div.monaco-hover-content
+  > .hover-row:has(a[class='code-link'][href*='eslint']) {
+  display: none !important;
+}
+div.monaco-hover-content
+  > .hover-row:has(a[href*='https://github.com/facebook/react/issues/14920'])
+{
+  display: none !important;
+}
+/* 让代码和文本居中对齐 */
+.monaco-hover .markdown-hover .hover-contents .rendered-markdown .codicon-none {
+  vertical-align: initial !important;
+}
+/* 优化eslint-rules-translate-chinese插件展示 */
+.monaco-editor .monaco-hover .hover-row .hover-row-contents {
+  /* 让分割线占满整个宽度 */
+  width: 100%;
+}
+/* 使用用户在vscode设置的字体（editor.fontFamily） */
+div.monaco-hover-content
+  > .hover-row
+  span[alt='eslint-rules-translate-chinese-markdown'] {
+  font-family: var(--testMessageDecorationFontFamily);
+}
+/* 文本里代码的背景色，颜色可根据需要自行配置 */
+div.monaco-hover-content
+  > .hover-row
+  span[alt='eslint-rules-translate-chinese-markdown']
+  code,
+.hover-row .hover-row-contents code {
+  padding: 2px 4px;
+  font-family: var(--testMessageDecorationFontFamily);
+  background-color: #eee !important;
+  border-radius: 4px !important;
+}
+/* 文本里类型为变量的代码颜色，颜色可根据需要自行配置 */
+div.monaco-hover-content
+  > .hover-row
+  code[alt='eslint-rules-translate-chinese-code-variable'] {
+  color: #0070c1;
+}
+/* 文本里类型为函数的代码颜色，颜色可根据需要自行配置 */
+div.monaco-hover-content
+  > .hover-row
+  code[alt='eslint-rules-translate-chinese-code-function'] {
+  color: #914c07;
+}
+/* 文本里类型为关键字的代码颜色，颜色可根据需要自行配置 */
+div.monaco-hover-content
+  > .hover-row
+  code[alt='eslint-rules-translate-chinese-code-keyword'] {
+  color: #0033b3;
+}
+/* 文本里类型为数字的代码颜色，颜色可根据需要自行配置 */
+div.monaco-hover-content
+  > .hover-row
+  code[alt='eslint-rules-translate-chinese-code-number'] {
+  color: #1750eb;
+}
+/* 错误信息链接的样式，可根据需要自行配置 */
+div.monaco-hover-content
+  > .hover-row
+  span[alt='eslint-rules-translate-chinese-link'] {
+  opacity: 0.6;
+  padding-left: 6px;
+}
