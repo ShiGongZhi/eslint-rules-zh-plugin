@@ -19,6 +19,8 @@
 
 ## Features
 
+> 以下规则同时支持跳转到对应的 eslint 中文文档页面（如果有的话，否则和 eslint 插件跳转一致）
+
 - 支持 eslint 官方规则
 - 支持 typescript-eslint 规则
 - 支持 eslint-plugin-react 规则

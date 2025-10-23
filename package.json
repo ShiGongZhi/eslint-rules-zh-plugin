@@ -1,8 +1,8 @@
 {
   "name": "eslint-rules-zh-with-pretty",
+  "version": "0.0.13",
   "displayName": "ESLint Rules Chinese with Pretty",
   "description": "中文展示eslint规则提示，且美化展示效果",
-  "version": "0.0.11",
   "publisher": "SoulFriends",
   "keywords": [
     "eslint",

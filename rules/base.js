@@ -1,9 +1,5 @@
 module.exports = {
   /* 不好翻译 */
-  // 'no-constant-condition': {
-  //   en: 'no-constant-condition',
-  //   zh: '禁止在条件中使用常量表达式',
-  // },
 
   /* 已专门翻译 */
   // 'no-self-assign': { en: 'no-self-assign', zh: '禁止自我赋值' },
@@ -13,20 +9,28 @@ module.exports = {
   // 'no-unused-labels': { en: 'no-unused-labels', zh: '禁用出现未使用过的标' },
 
   /* 可以翻译 */
+  'for-direction': {
+    en: 'The update clause in this loop moves the variable in the wrong direction.',
+    zh: '此循环中的 update 子句将变量移动到错误的方向。',
+  },
+
+  'no-constant-condition': {
+    en: 'Unexpected constant condition.',
+    zh: '意外的常量条件。',
+  },
+
   'no-duplicate-case': {
     en: 'Duplicate case label.',
-    zh: '重复的 case 标签',
+    zh: '重复的 case 标签。',
   },
+
+  'no-empty': { en: 'Empty block statement.', zh: '空块语句。' },
 
   'valid-typeof': {
     en: 'Invalid typeof comparison value',
     zh: 'typeof 运算符的结果与无意义的字面量进行比较',
   },
 
-  'for-direction': {
-    en: 'for-direction',
-    zh: '强制 “for” 循环中更新子句的计数器朝着正确的方向移动',
-  },
   'getter-return': {
     en: 'getter-return',
     zh: '强制 getter 函数中出现 return 语句',
@@ -55,7 +59,6 @@ module.exports = {
     zh: '禁止 function 定义中出现重名参数',
   },
   'no-dupe-keys': { en: 'no-dupe-keys', zh: '禁止对象字面量中出现重复的 key' },
-  'no-empty': { en: 'no-empty', zh: '禁止出现空语句块' },
   'no-empty-character-class': {
     en: 'no-empty-character-class',
     zh: '禁止在正则表达式中使用空字符集',

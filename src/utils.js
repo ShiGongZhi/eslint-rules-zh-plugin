@@ -71,6 +71,17 @@ function translateHeuristic(ruleId, message, ruleEntry) {
       return multipleDependencyHandling(deps, hook, restZh, '有不必要的')
     }
 
+    // 没有添加依赖数组的情况
+    m = message.match(
+      /React Hook (\w+) does nothing when called with only one argument. Did you forget to pass an array of dependencies\?/,
+    )
+    if (m) {
+      const hook = m[1]
+      return `React Hook ${renderCodeBlockFunction(
+        hook,
+      )} 在仅传入一个参数时不会起作用。你是否忘记传入依赖数组？`
+    }
+
     // 字面量依赖（null、数字、字符串等）
     m = message.match(
       /^The (.+?) literal is not a valid dependency because it never changes\.?/,
@@ -197,7 +208,37 @@ function translateHeuristic(ruleId, message, ruleEntry) {
     }
   }
 
-  // TypeScript ESLint 规则特化翻译
+  // @typescript-eslint 规则特化翻译
+  if (ruleId.startsWith('@typescript-eslint/')) {
+    if (ruleId === '@typescript-eslint/no-explicit-any') {
+      // 显式使用 any 类型
+      m = message.match(/^Unexpected any. Specify a different type\.?/)
+      if (m) {
+        return `意外的 ${renderCodeBlockKeyword('any')}。请指定其他的类型。`
+      }
+    }
+
+    // 类型相关错误的通用模式
+    m = message.match(/^Type '(.+?)' is not assignable to type '(.+?)'\.?/)
+    if (m) {
+      const fromType = m[1]
+      const toType = m[2]
+      return `类型 '${fromType}' 不能赋值给类型 '${toType}'`
+    }
+
+    // 参数相关错误
+    m = message.match(/^Parameter '(.+?)' (.+)\.?/)
+    if (m) {
+      const paramName = m[1]
+      const description = m[2]
+      let descZh = description
+      if (description.includes('implicitly has an')) {
+        descZh = "隐式具有 'any' 类型"
+      }
+      return `参数 '${paramName}' ${descZh}`
+    }
+  }
+
   // @typescript-eslint/no-unused-vars: 未使用变量
   if (
     ruleId === '@typescript-eslint/no-unused-vars' ||
@@ -239,36 +280,13 @@ function translateHeuristic(ruleId, message, ruleEntry) {
     }
   }
 
-  // @typescript-eslint 其他常见规则
-  if (ruleId.startsWith('@typescript-eslint/')) {
-    // 类型相关错误的通用模式
-    m = message.match(/^Type '(.+?)' is not assignable to type '(.+?)'\.?/)
-    if (m) {
-      const fromType = m[1]
-      const toType = m[2]
-      return `类型 '${fromType}' 不能赋值给类型 '${toType}'`
-    }
-
-    // 参数相关错误
-    m = message.match(/^Parameter '(.+?)' (.+)\.?/)
-    if (m) {
-      const paramName = m[1]
-      const description = m[2]
-      let descZh = description
-      if (description.includes('implicitly has an')) {
-        descZh = "隐式具有 'any' 类型"
-      }
-      return `参数 '${paramName}' ${descZh}`
-    }
-  }
-
   // 3) 一些通用短语替换，提升可读性（尽量不改变变量名等细节）
   // 注意：这里的替换在特化翻译之后进行，作为兜底处理
   let zh = message
   /** @type {{from: RegExp, to: string}[]} */
   const replacements = [
     // 针对 no-explicit-any 等规则的常见消息模式
-    { from: /Specify a different type\.?/gi, to: '请指定其他的类型' },
+    // { from: /Specify a different type\.?/gi, to: '请指定其他的类型' },
     // TypeScript 类型关键字高亮
     {
       from: /\bany\b/g,
