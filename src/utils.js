@@ -30,7 +30,9 @@ function translateHeuristic(ruleId, message, ruleEntry) {
     }
 
     // 缺少多个依赖的情况
-    m = message.match(/^React Hook (\w+) has missing dependencies: (.+?)\.(.*)/)
+    m = message.match(
+      /^React Hook (\w+) has missing dependencies: (.+?)\. (.*)/,
+    )
     if (m) {
       const hook = m[1]
       const deps = m[2]
@@ -59,7 +61,7 @@ function translateHeuristic(ruleId, message, ruleEntry) {
 
     // 多个不必要的依赖
     m = message.match(
-      /^React Hook (\w+) has unnecessary dependencies: (.+?)\.(.*)/,
+      /^React Hook (\w+) has unnecessary dependencies: (.+?)\. (.*)/,
     )
     if (m) {
       const hook = m[1]
