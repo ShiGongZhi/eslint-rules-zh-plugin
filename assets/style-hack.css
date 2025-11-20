@@ -40,17 +40,41 @@ div.monaco-hover-content
   code[alt='eslint-rules-translate-chinese-code-variable'] {
   color: #0070c1;
 }
+/* 文本里类型为属性的代码颜色，颜色可根据需要自行配置 */
+div.monaco-hover-content
+  > .hover-row
+  code[alt='eslint-rules-translate-chinese-code-property'] {
+  color: #871094;
+}
 /* 文本里类型为函数的代码颜色，颜色可根据需要自行配置 */
 div.monaco-hover-content
   > .hover-row
   code[alt='eslint-rules-translate-chinese-code-function'] {
   color: #914c07;
 }
+/* 文本里类型为参数的代码颜色，颜色可根据需要自行配置 */
+div.monaco-hover-content
+  > .hover-row
+  code[alt='eslint-rules-translate-chinese-code-parameter'] {
+  color: #5b5d00;
+}
+/* 文本里类型为js类的代码颜色，颜色可根据需要自行配置 */
+div.monaco-hover-content
+  > .hover-row
+  code[alt='eslint-rules-translate-chinese-code-class'] {
+  color: #00627a;
+}
 /* 文本里类型为关键字的代码颜色，颜色可根据需要自行配置 */
 div.monaco-hover-content
   > .hover-row
   code[alt='eslint-rules-translate-chinese-code-keyword'] {
   color: #0033b3;
+}
+/* 文本里类型为字符串的代码颜色，颜色可根据需要自行配置 */
+div.monaco-hover-content
+  > .hover-row
+  code[alt='eslint-rules-translate-chinese-code-string'] {
+  color: #067d17;
 }
 /* 文本里类型为数字的代码颜色，颜色可根据需要自行配置 */
 div.monaco-hover-content

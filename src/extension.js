@@ -51,30 +51,40 @@ function provideHover(document, position) {
         if (codeValue) {
           let ruleId = String(codeValue)
           const rule = eslintRules[ruleId]
-          let url = RULE_URL.BASE + ruleId
+          // console.log(
+          //   '%c Line:45 🥥 diagnostic.code',
+          //   'color:#ea7e5c',
+          //   diagnostic.code,
+          // )
+          let url = diagnostic?.code?.target?._formatted
 
           if (/typescript-eslint/.test(ruleId)) {
             // typescript-eslint 规则
-            url =
-              RULE_URL.TYPESCRIPT + ruleId.replace('@typescript-eslint/', '')
+            // url =
+            //   RULE_URL.TYPESCRIPT + ruleId.replace('@typescript-eslint/', '')
           } else if (/react-hooks/.test(ruleId)) {
             // eslint-plugin-react-hooks 规则
-            url = RULE_URL.REACT_HOOKS + reactHooksUrlMapping[ruleId]
+            // url = RULE_URL.REACT_HOOKS + reactHooksUrlMapping[ruleId]
           } else if (/react-refresh/.test(ruleId)) {
             // eslint-plugin-react-refresh 规则
-            url = RULE_URL.REACT_REFRESH
+            // url = RULE_URL.REACT_REFRESH
           } else if (/react/.test(ruleId)) {
             // eslint-plugin-react 规则
-            url = RULE_URL.REACT + ruleId.replace('react/', '') + '.md'
+            // url = RULE_URL.REACT + ruleId.replace('react/', '') + '.md'
           } else if (/vue/.test(ruleId)) {
             // eslint-plugin-vue 规则
-            url = RULE_URL.VUE + ruleId.replace('vue/', '')
+            // url = RULE_URL.VUE + ruleId.replace('vue/', '')
           } else if (/prettier/.test(ruleId)) {
             // eslint-plugin-prettier 规则
-            url = RULE_URL.PRETTIER
+            // url = RULE_URL.PRETTIER
           } else {
-            // eslint 规则
-            // ruleId = `eslint(${ruleId})`
+            if (ruleId.includes('/')) {
+              // 处理类似 scope/rule-name 的规则 ID
+            } else {
+              // eslint 规则
+              url = RULE_URL.BASE + ruleId
+              // ruleId = `eslint(${ruleId})`
+            }
           }
 
           // 使用翻译器翻译错误消息

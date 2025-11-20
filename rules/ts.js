@@ -5,10 +5,65 @@ module.exports = {
   //   zh: '不允许@ts-<指令>评论或要求指令后的描述'
   // },
 
-  '@typescript-eslint/adjacent-overload-signatures': {
-    en: 'Require that member overloads be consecutive',
-    zh: '要求成员重载是连续的',
+  // // 场景太多，不好翻译
+  // '@typescript-eslint/no-empty-function': {
+  //   en: "Unexpected empty function 'anotherFn'.",
+  //   zh: '不允许空函数',
+  // },
+
+  // // 场景太多，不好翻译
+  // '@typescript-eslint/no-empty-interface': {
+  //   en: 'An empty interface is equivalent to `{}`.',
+  //   en: 'An interface declaring no members is equivalent to its supertype.',
+  //   zh: '不允许声明空接口',
+  // },
+
+  // // 场景太多，不好翻译。可能是number还可能是string等其他类型
+  // '@typescript-eslint/no-inferrable-types': {
+  //   en: 'Type number trivially inferred from a number literal, remove type annotation.',
+  //   zh: '类型数字从数字字面量中简单地推断出来，删除类型注释。',
+  // },
+
+  // 不仅不好翻译，看官方文档，这是个弃用规则，也没有翻译的必要
+  // '@typescript-eslint/no-var-requires': {
+  //   en: 'Require statement not part of import statement.',
+  //   zh: 'require 语句不属于 import 语句。',
+  // },
+
+  /* 已专门翻译 */
+  // '@typescript-eslint/triple-slash-reference': {
+  //   en: 'Disallow certain triple slash directives in favor of ES6-style import declarations',
+  //   zh: '不允许某些三斜线指令，而采用ES6风格的导入声明',
+  // },
+
+  // '@typescript-eslint/adjacent-overload-signatures': {
+  //   en: 'Require that member overloads be consecutive',
+  //   zh: '要求成员重载是连续的',
+  // },
+
+  // '@typescript-eslint/no-unused-vars': {
+  //   en: 'Disallow unused variables',
+  //   zh: '不允许未使用的变量',
+  // },
+
+  // '@typescript-eslint/prefer-namespace-keyword': {
+  //   en: 'Use "namespace" instead of "module" to declare custom TypeScript modules.',
+  //   zh: '要求使用命名空间关键字而不是模块关键字来声明自定义TypeScript模块',
+  // },
+
+  /* 可以翻译 */
+  '@typescript-eslint/no-unused-expressions': {
+    en: 'Expected an assignment or function call and instead saw an expression.',
+    zh: '期望赋值或函数调用，而不是表达式。',
   },
+
+  '@typescript-eslint/no-namespace': {
+    en: 'ES2015 module syntax is preferred over namespaces.',
+    // zh: 'ES2015 模块语法优于命名空间。',
+    zh: 'ES2015 module syntax 优于 namespaces.',
+  },
+
+  /* 未验证 */
   '@typescript-eslint/array-type': {
     en: 'Require using either T[] or Array<T> for arrays',
     zh: '要求对数组使用T[]或Array<T>',
@@ -101,10 +156,6 @@ module.exports = {
     en: 'Disallow using the delete operator on computed key expressions',
     zh: '不允许在计算的关键表达式上使用删除操作符',
   },
-  '@typescript-eslint/no-empty-interface': {
-    en: 'Disallow the declaration of empty interfaces',
-    zh: '不允许声明空接口',
-  },
   '@typescript-eslint/no-explicit-any': {
     en: 'Disallow the any type',
     zh: '不允许any类型',
@@ -129,10 +180,6 @@ module.exports = {
     en: 'Disallow usage of the implicit any type in catch clauses',
     zh: '不允许在catch子句中使用隐含的any类型',
   },
-  '@typescript-eslint/no-inferrable-types': {
-    en: 'Disallow explicit type declarations for variables or parameters initialized to a number, string, or boolean',
-    zh: '不允许对初始化为数字、字符串或布尔值的变量或参数进行明确的类型声明',
-  },
   '@typescript-eslint/no-invalid-void-type': {
     en: 'Disallow void type outside of generic or return types',
     zh: '不允许在通用类型或返回类型之外的无效类型',
@@ -148,10 +195,6 @@ module.exports = {
   '@typescript-eslint/no-misused-promises': {
     en: 'Disallow Promises in places not designed to handle them',
     zh: '不允许在不是为处理承诺而设计的地方使用承诺',
-  },
-  '@typescript-eslint/no-namespace': {
-    en: 'Disallow custom TypeScript modules and namespaces',
-    zh: '不允许自定义TypeScript模块和命名空间',
   },
   '@typescript-eslint/no-non-null-asserted-nullish-coalescing': {
     en: 'Disallow non-null assertions in the left operand of a nullish coalescing operator',
@@ -233,10 +276,6 @@ module.exports = {
     en: "Disallow empty exports that don't change anything in a module file",
     zh: '不允许在模块文件中不改变any东西的空导出',
   },
-  '@typescript-eslint/no-var-requires': {
-    en: 'Disallow require statements except in import statements',
-    zh: '除了在导入语句中，不允许require语句',
-  },
   '@typescript-eslint/non-nullable-type-assertion-style': {
     en: 'Enforce non-null assertions over explicit type casts',
     zh: '在明确的类型转换中强制执行非空的断言',
@@ -268,10 +307,6 @@ module.exports = {
   '@typescript-eslint/prefer-literal-enum-member': {
     en: 'Require all enum members to be literal values',
     zh: '要求所有枚举成员都是字面价值',
-  },
-  '@typescript-eslint/prefer-namespace-keyword': {
-    en: 'Require using namespace keyword over module keyword to declare custom TypeScript modules',
-    zh: '要求使用命名空间关键字而不是模块关键字来声明自定义TypeScript模块',
   },
   '@typescript-eslint/prefer-nullish-coalescing': {
     en: 'Enforce using the nullish coalescing operator instead of logical chaining',
@@ -336,10 +371,6 @@ module.exports = {
   '@typescript-eslint/switch-exhaustiveness-check': {
     en: 'Require switch-case statements to be exhaustive with union type',
     zh: '要求switch-case语句用union类型穷举',
-  },
-  '@typescript-eslint/triple-slash-reference': {
-    en: 'Disallow certain triple slash directives in favor of ES6-style import declarations',
-    zh: '不允许某些三斜线指令，而采用ES6风格的导入声明',
   },
   '@typescript-eslint/type-annotation-spacing': {
     en: 'Require consistent spacing around type annotations',
@@ -409,10 +440,6 @@ module.exports = {
     en: 'Disallow duplicate imports',
     zh: '不允许重复进口',
   },
-  '@typescript-eslint/no-empty-function': {
-    en: 'Disallow empty functions',
-    zh: '不允许空函数',
-  },
   '@typescript-eslint/no-extra-parens': {
     en: 'Disallow unnecessary parentheses',
     zh: '不允许有不必要的括号',
@@ -456,14 +483,6 @@ module.exports = {
   '@typescript-eslint/no-throw-literal': {
     en: 'Disallow throwing literals as exceptions',
     zh: '不允许将字词作为异常抛出',
-  },
-  '@typescript-eslint/no-unused-expressions': {
-    en: 'Expected an assignment or function call and instead saw an expression',
-    zh: '期望赋值或函数调用，而不是表达式',
-  },
-  '@typescript-eslint/no-unused-vars': {
-    en: 'Disallow unused variables',
-    zh: '不允许未使用的变量',
   },
   '@typescript-eslint/no-use-before-define': {
     en: 'Disallow the use of variables before they are defined',

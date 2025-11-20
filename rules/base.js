@@ -1,9 +1,7 @@
+const { renderCodeBlockClass } = require('../src/utils')
+
 module.exports = {
   /* 不好翻译 */
-  // 'no-constant-condition': {
-  //   en: 'no-constant-condition',
-  //   zh: '禁止在条件中使用常量表达式',
-  // },
 
   /* 已专门翻译 */
   // 'no-self-assign': { en: 'no-self-assign', zh: '禁止自我赋值' },
@@ -12,21 +10,42 @@ module.exports = {
 
   // 'no-unused-labels': { en: 'no-unused-labels', zh: '禁用出现未使用过的标' },
 
+  // 'no-regex-spaces': {
+  //   en: 'no-regex-spaces',
+  //   zh: '禁止正则表达式字面量中出现多个空格',
+  // },
+
+  // 'no-var': { en: 'no-var', zh: '要求使用 let 或 const 而不是 var' },
+
   /* 可以翻译 */
+  'for-direction': {
+    en: 'The update clause in this loop moves the variable in the wrong direction.',
+    zh: '此循环中的 update 子句将变量移动到错误的方向。',
+  },
+
+  'no-constant-condition': {
+    en: 'Unexpected constant condition.',
+    zh: '意外的常量条件。',
+  },
+
   'no-duplicate-case': {
     en: 'Duplicate case label.',
-    zh: '重复的 case 标签',
+    zh: '重复的 case 标签。',
   },
+
+  'no-empty': { en: 'Empty block statement.', zh: '空块语句。' },
 
   'valid-typeof': {
     en: 'Invalid typeof comparison value',
     zh: 'typeof 运算符的结果与无意义的字面量进行比较',
   },
 
-  'for-direction': {
-    en: 'for-direction',
-    zh: '强制 “for” 循环中更新子句的计数器朝着正确的方向移动',
+  'no-console': {
+    en: 'Unexpected console statement.',
+    zh: `禁止使用 ${renderCodeBlockClass('console')} 语句。`,
   },
+
+  /* 未验证 */
   'getter-return': {
     en: 'getter-return',
     zh: '强制 getter 函数中出现 return 语句',
@@ -44,7 +63,6 @@ module.exports = {
     en: 'no-cond-assign',
     zh: '禁止条件表达式中出现赋值操作符',
   },
-  'no-console': { en: 'no-console', zh: '禁用 console' },
   'no-control-regex': {
     en: 'no-control-regex',
     zh: '禁止在正则表达式中使用控制字符',
@@ -55,7 +73,6 @@ module.exports = {
     zh: '禁止 function 定义中出现重名参数',
   },
   'no-dupe-keys': { en: 'no-dupe-keys', zh: '禁止对象字面量中出现重复的 key' },
-  'no-empty': { en: 'no-empty', zh: '禁止出现空语句块' },
   'no-empty-character-class': {
     en: 'no-empty-character-class',
     zh: '禁止在正则表达式中使用空字符集',
@@ -91,10 +108,6 @@ module.exports = {
   'no-prototype-builtins': {
     en: 'no-prototype-builtins',
     zh: '禁止直接调用 Object.prototypes 的内置属性',
-  },
-  'no-regex-spaces': {
-    en: 'no-regex-spaces',
-    zh: '禁止正则表达式字面量中出现多个空格',
   },
   'no-sparse-arrays': { en: 'no-sparse-arrays', zh: '禁用稀疏数组' },
   'no-template-curly-in-string': {
@@ -683,7 +696,6 @@ module.exports = {
     en: 'no-useless-rename',
     zh: '禁止在 import 和 export 和解构赋值时将引用重命名为相同的名字',
   },
-  'no-var': { en: 'no-var', zh: '要求使用 let 或 const 而不是 var' },
   'object-shorthand': {
     en: 'object-shorthand',
     zh: '要求或禁止对象字面量中方法和属性使用简写语法',

@@ -73,6 +73,17 @@ function translateHeuristic(ruleId, message, ruleEntry) {
       return multipleDependencyHandling(deps, hook, restZh, '有不必要的')
     }
 
+    // 没有添加依赖数组的情况
+    m = message.match(
+      /React Hook (\w+) does nothing when called with only one argument. Did you forget to pass an array of dependencies\?/,
+    )
+    if (m) {
+      const hook = m[1]
+      return `React Hook ${renderCodeBlockFunction(
+        hook,
+      )} 在仅传入一个参数时不会起作用。你是否忘记传入依赖数组？`
+    }
+
     // 字面量依赖（null、数字、字符串等）
     m = message.match(
       /^The (.+?) literal is not a valid dependency because it never changes\.?/,
@@ -177,7 +188,19 @@ function translateHeuristic(ruleId, message, ruleEntry) {
       const varName = m[1]
       return `${renderCodeBlockVariable(
         varName,
-      )} 从未被重新赋值，应使用 ${renderCodeBlockKeyword('const')} 声明`
+      )} 从未被重新赋值，应使用 ${renderCodeBlockKeyword('const')} 声明。`
+    }
+  }
+
+  if (ruleId === 'no-var') {
+    // 处理 "Unexpected var, use let or const instead." 格式
+    m = message.match(/^Unexpected (.+?), use (.+?) or (.+?) instead\.?/)
+    if (m) {
+      return `禁止使用 ${renderCodeBlockKeyword(
+        m[1],
+      )} 应使用 ${renderCodeBlockKeyword(m[2])} 或 ${renderCodeBlockKeyword(
+        m[3],
+      )} 声明。`
     }
   }
 
@@ -192,57 +215,96 @@ function translateHeuristic(ruleId, message, ruleEntry) {
   if (ruleId === 'no-useless-escape') {
     // 处理 "Unnecessary escape character: 变量名." 格式
     m = message.match(/Unnecessary escape character: (.*)\./)
-    console.log('%c Line:190 🎂 m', 'color:#3f7cff', m)
     if (m) {
       const varName = m[1]
-      return `不必要的转义字符: ${renderCodeBlock(varName)}`
+      return `不必要的转义字符: ${renderCodeBlock(
+        JSON.stringify(varName).replace(/^"|"$/g, ''),
+      )}`
     }
   }
 
-  // TypeScript ESLint 规则特化翻译
-  // @typescript-eslint/no-unused-vars: 未使用变量
-  if (
-    ruleId === '@typescript-eslint/no-unused-vars' ||
-    ruleId === 'no-unused-vars'
-  ) {
-    // 变量被赋值但仅用作类型
-    m = message.match(/^'(.+?)' is assigned a value but only used as a type\.?/)
+  if (ruleId === 'no-regex-spaces') {
+    // 处理 "Spaces are hard to count. Use {2}." 格式
+    m = message.match(/Spaces are hard to count. Use \{(\d+)\}\./)
     if (m) {
-      const varName = m[1]
-      return `${renderCodeBlockVariable(varName)} 被赋值但仅用作类型`
-    }
-
-    // 变量被赋值但从未使用
-    m = message.match(/^'(.+?)' is assigned a value but never used\.?/)
-    if (m) {
-      const varName = m[1]
-      return `${renderCodeBlockVariable(varName)} 被赋值但从未使用`
-    }
-
-    // 变量已定义但从未使用
-    m = message.match(/^'(.+?)' is defined but never used\.?/)
-    if (m) {
-      const varName = m[1]
-      return `${renderCodeBlockVariable(varName)} 已定义但从未使用`
-    }
-
-    // 变量仅用作类型
-    m = message.match(/^'(.+?)' is only used as a type\.?/)
-    if (m) {
-      const varName = m[1]
-      return `${renderCodeBlockVariable(varName)} 仅用作类型`
-    }
-
-    // 变量未定义
-    m = message.match(/^'(.+?)' is not defined\.?/)
-    if (m) {
-      const varName = m[1]
-      return `${renderCodeBlockVariable(varName)} 未定义`
+      const spaceCount = m[1]
+      return `空格数量难以计算。请使用 ${renderCodeBlock(
+        `&nbsp;{${spaceCount}}`,
+      )} 来表示 ${renderCodeBlockNumber(spaceCount)} 个空格`
     }
   }
 
-  // @typescript-eslint 其他常见规则
+  // @typescript-eslint 规则特化翻译
   if (ruleId.startsWith('@typescript-eslint/')) {
+    if (ruleId === '@typescript-eslint/no-explicit-any') {
+      // 显式使用 any 类型
+      m = message.match(/^Unexpected any. Specify a different type\.?/)
+      if (m) {
+        return `禁止使用 ${renderCodeBlockKeyword('any')}。请指定其他的类型。`
+      }
+    }
+
+    if (ruleId === '@typescript-eslint/no-unused-vars') {
+      // 已定义但从未使用
+      m = message.match(/^'(.+?)' is defined but never used\.?(.*)/)
+      if (m) {
+        const varName = m[1]
+        const restContent = m[2]
+        if (restContent) {
+          let restContentMatch = restContent.match(
+            / Allowed unused args must match (.*)\./,
+          )
+          if (restContentMatch) {
+            return `${renderCodeBlockParameter(
+              varName,
+            )} 已定义但从未使用。允许未使用的参数必须匹配 ${renderCodeBlock(
+              restContentMatch[1],
+            )}`
+          } else {
+            return message
+          }
+        }
+        return `${renderCodeBlockVariable(varName)} 已定义但从未使用。`
+      }
+
+      m = message.match(/^'(.+?)' is assigned a value but never used\.?/)
+      if (m) {
+        const varName = m[1]
+        return `${renderCodeBlockVariable(varName)} 被赋值但从未使用。`
+      }
+    }
+
+    if (ruleId === '@typescript-eslint/triple-slash-reference') {
+      m = message.match(
+        /Do not use a triple slash reference for (.+?), use `(.+?)` style instead\.?/,
+      )
+      if (m) {
+        return `不允许使用三斜线引用 ${renderCodeBlockString(
+          m[1],
+        )} 请改用 ${renderCodeBlockKeyword(m[2])} 风格。`
+      }
+    }
+
+    if (ruleId === '@typescript-eslint/adjacent-overload-signatures') {
+      m = message.match(/All (.+?) signatures should be adjacent\.?/)
+      if (m) {
+        return `所有 ${renderCodeBlockFunction(m[1])} 签名都应相邻。`
+      }
+    }
+
+    if (ruleId === '@typescript-eslint/prefer-namespace-keyword') {
+      m = message.match(
+        /Use 'namespace' instead of 'module' to declare custom TypeScript modules\.?/,
+      )
+      if (m) {
+        return `请使用 ${renderCodeBlockKeyword(
+          'namespace',
+        )} 而不是 ${renderCodeBlockKeyword(
+          'module',
+        )} 来声明自定义 TypeScript 模块。`
+      }
+    }
+
     // 类型相关错误的通用模式
     m = message.match(/^Type '(.+?)' is not assignable to type '(.+?)'\.?/)
     if (m) {
@@ -269,9 +331,7 @@ function translateHeuristic(ruleId, message, ruleEntry) {
   let zh = message
   /** @type {{from: RegExp, to: string}[]} */
   const replacements = [
-    // 针对 no-explicit-any 等规则的常见消息模式
-    { from: /Specify a different type\.?/gi, to: '请指定其他的类型' },
-    // TypeScript 类型关键字高亮
+    // 关键字高亮
     {
       from: /\bany\b/g,
       to:
@@ -287,37 +347,10 @@ function translateHeuristic(ruleId, message, ruleEntry) {
           : renderCodeBlockKeyword('const'),
     },
 
-    // { from: /\bunnecessary dependency\b/gi, to: '不必要的依赖' },
-    // { from: /\bunnecessary dependencies\b/gi, to: '不必要的依赖' },
-    // { from: /\bdependency\b/gi, to: '依赖' },
-    // { from: /\bdependencies\b/gi, to: '依赖' },
-    { from: /Missing/gi, to: '缺少' },
-    { from: /\bmissing dependency\b/gi, to: '缺少依赖' },
-    { from: /\bmissing dependencies\b/gi, to: '缺少依赖' },
     // 注意：下面这些规则已经在特化处理中处理过了，这里作为兜底
-    { from: /\b(\w+) is not defined/gi, to: '$1 未定义' },
-    {
-      from: /\b(\w+) is defined but never used/gi,
-      to: '$1 已定义但从未使用',
-    },
-    {
-      from: /\b(\w+) is assigned a value but never used/gi,
-      to: '$1 被赋值但从未使用',
-    },
-    { from: /not allowed/gi, to: '不允许' },
-    { from: /should not/gi, to: '不应' },
+    // { from: /\b(\w+) is not defined/gi, to: '$1 未定义' },
     // { from: /\bmust\b/gi, to: '必须' },
-    { from: /require(s)?/gi, to: '要求' },
-    {
-      from: /Either include it or remove the dependency array\.?/gi,
-      to: '请将其加入依赖数组，或移除依赖数组',
-    },
-    {
-      from: /Either include them or remove the dependency array\.?/gi,
-      to: '请将它们加入依赖数组，或移除依赖数组',
-    },
-    { from: /You can safely remove it\.?/gi, to: '可以安全移除' },
-    { from: /because it never changes/gi, to: '因为它永远不会变化' },
+    // { from: /require(s)?/gi, to: '要求' },
   ]
   for (const { from, to } of replacements) {
     zh = zh.replace(from, to)
@@ -329,26 +362,6 @@ function translateHeuristic(ruleId, message, ruleEntry) {
   }
 
   return zh
-}
-
-function renderCodeBlock(content) {
-  return `<code>${content}</code>`
-}
-
-function renderCodeBlockVariable(content) {
-  return `<code alt="eslint-rules-translate-chinese-code-variable">${content}</code>`
-}
-
-function renderCodeBlockFunction(content) {
-  return `<code alt="eslint-rules-translate-chinese-code-function">${content}</code>`
-}
-
-function renderCodeBlockKeyword(content) {
-  return `<code alt="eslint-rules-translate-chinese-code-keyword">${content}</code>`
-}
-
-function renderCodeBlockNumber(content) {
-  return `<code alt="eslint-rules-translate-chinese-code-number">${content}</code>`
 }
 
 // 附加说明
@@ -438,6 +451,43 @@ function variableXXX(m, message, render, restContent) {
 //   return message
 // }
 
+function renderCodeBlock(content) {
+  return `<code>${content}</code>`
+}
+
+function renderCodeBlockVariable(content) {
+  return `<code alt="eslint-rules-translate-chinese-code-variable">${content}</code>`
+}
+
+function renderCodeBlockProperty(content) {
+  return `<code alt="eslint-rules-translate-chinese-code-property">${content}</code>`
+}
+
+function renderCodeBlockFunction(content) {
+  return `<code alt="eslint-rules-translate-chinese-code-function">${content}</code>`
+}
+
+function renderCodeBlockParameter(content) {
+  return `<code alt="eslint-rules-translate-chinese-code-parameter">${content}</code>`
+}
+
+function renderCodeBlockClass(content) {
+  return `<code alt="eslint-rules-translate-chinese-code-class">${content}</code>`
+}
+
+function renderCodeBlockKeyword(content) {
+  return `<code alt="eslint-rules-translate-chinese-code-keyword">${content}</code>`
+}
+
+function renderCodeBlockString(content) {
+  return `<code alt="eslint-rules-translate-chinese-code-string">${content}</code>`
+}
+
+function renderCodeBlockNumber(content) {
+  return `<code alt="eslint-rules-translate-chinese-code-number">${content}</code>`
+}
+
 module.exports = {
   translateHeuristic,
+  renderCodeBlockClass,
 }
